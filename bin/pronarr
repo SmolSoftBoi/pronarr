@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+//
+// This executable sets up the environment and runs the Pronarr CLI.
+//
+
+'use strict';
+
+process.title = 'pronarr';
+
+// Find the Pronarr lib
+const path = require('path');
+const fs = require('fs');
+const lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
+
+// Run Pronarr
+require(lib + '/cli')();
