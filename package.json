@@ -31,7 +31,7 @@
     "chalk": "^4.1.0",
     "commander": "^7.0.0",
     "node-persist": "^0.0.12",
-    "node-subler": "^0.0.3",
+    "node-subler": "^0.0.4",
     "rimraf": "^3.0.2",
     "semver": "^7.3.4",
     "source-map-support": "^0.5.19"
