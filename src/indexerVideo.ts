@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import {  Atoms, AtomTag, MediaKind } from 'node-subler';
+import { Atoms, AtomTag, MediaKind } from 'node-subler';
 
 import { IndexerName, PluginIdentifier, PluginName } from './api';
 import { Download, SerializedDownload } from './download';
