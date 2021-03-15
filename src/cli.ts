@@ -15,6 +15,7 @@ const log = Logger.internal;
 
 /** Required Node Version */
 const requiredNodeVersion = getRequiredNodeVersion();
+
 if (requiredNodeVersion && !satisfies(process.version, requiredNodeVersion)) {
     log.warn(`Pronarr requires Node version of ${requiredNodeVersion} which does not satisfy the current Node version of \
         ${process.version}. You may need to upgrade your installation of Node.`);
@@ -23,7 +24,7 @@ if (requiredNodeVersion && !satisfies(process.version, requiredNodeVersion)) {
 /** CLI */
 export = function cli(): void {
 
-    /** Kepp Orphans? */
+    /** Keep Orphans? */
     let keepOrphans = false;
 
     /** Custom Pluginn Path */

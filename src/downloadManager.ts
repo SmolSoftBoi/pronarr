@@ -1,4 +1,4 @@
-import { spawnSync } from 'child_process';
+
 import { createWriteStream, existsSync, mkdirSync, PathLike, unlinkSync } from 'fs';
 import { get } from 'https';
 import { join } from 'path';
@@ -18,10 +18,11 @@ const log = Logger.internal;
 /** Download Manager Options */
 export interface DownloadManagerOptions {
 
-    /** Custom Downloads Path */
+    /** Custom Downloads Path? */
     customDownloadsPath?: string;
 }
 
+/** Download Manager */
 export class DownloadManager {
 
     /** Pronarr API */
@@ -171,13 +172,7 @@ export class DownloadManager {
         /** Tag Command */
         const tagCommand = subler.buildTagCommand();
 
-        /** Echo */
-        const echo = spawnSync('echo', [
-            tagCommand.command,
-            ...tagCommand.args
-        ]);
-
-        log.debug(echo.output.join(' '));
+        log.debug(tagCommand.command, ...tagCommand.args);
 
         /** Tag */
         const tag = subler.tag();

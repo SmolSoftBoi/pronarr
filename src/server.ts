@@ -19,13 +19,13 @@ const log = Logger.internal;
 /** Pronarr Options */
 export interface PronarrOptions {
 
-    /** Pronarr Configuration */
+    /** Pronarr Configuration? */
     config?: PronarrConfig;
 
     /** Keep Orphaned Cached Videos? */
     keepOrphanedCachedVideos?: boolean;
 
-    /** Custom Plugin Path */
+    /** Custom Plugin Path? */
     customPluginPath?: string;
 }
 
@@ -63,8 +63,8 @@ export class Server {
     /** Plugin Manager */
     private readonly pluginManager: PluginManager;
 
-    /** Downloads Manager */
-    private readonly downloadsManager: DownloadManager;
+    /** Download Manager */
+    private readonly downloadManager: DownloadManager;
 
     /** Pronarr Configuration */
     private readonly config: PronarrConfig;
@@ -107,7 +107,7 @@ export class Server {
             customDownloadsPath: this.config.downloads
         };
 
-        this.downloadsManager = new DownloadManager(this.api, downloadManagerOptions);
+        this.downloadManager = new DownloadManager(this.api, downloadManagerOptions);
     }
 
     /** Start */
