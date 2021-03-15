@@ -30,6 +30,9 @@ export = function cli(): void {
     /** Custom Pluginn Path */
     let customPluginPath: string | undefined = undefined;
 
+    /** Debug Mode Enabled? */
+    let debugModeEnabled = false;
+
     /** Shutting Down? */
     let shuttingDown = false;
 
@@ -43,7 +46,7 @@ export = function cli(): void {
         .option(
             '-D, --debug',
             'Turn on debug level logging.',
-            () => Logger.setDebugEnabled(true)
+            () => debugModeEnabled = true
         )
         .option(
             '-P, --plugin-path [path]',
@@ -67,10 +70,15 @@ export = function cli(): void {
         )
         .parse(process.argv);
 
+    if (debugModeEnabled) {
+        Logger.setDebugEnabled(true);
+    }
+
     /** Options */
     const options: PronarrOptions = {
         keepOrphanedCachedVideos: keepOrphans,
-        customPluginPath: customPluginPath
+        customPluginPath: customPluginPath,
+        debugModeEnabled: debugModeEnabled
     };
 
     /** Server */

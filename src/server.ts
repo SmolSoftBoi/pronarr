@@ -27,6 +27,9 @@ export interface PronarrOptions {
 
     /** Custom Plugin Path? */
     customPluginPath?: string;
+
+    /** Debug Mode Enabled? */
+    debugModeEnabled?: boolean;
 }
 
 /** Pronarr Configuration */
@@ -104,7 +107,8 @@ export class Server {
 
         /** Downloads Manager Options */
         const downloadManagerOptions: DownloadManagerOptions = {
-            customDownloadsPath: this.config.downloads
+            customDownloadsPath: this.config.downloads,
+            debugModeEnabled: options.debugModeEnabled
         };
 
         this.downloadManager = new DownloadManager(this.api, downloadManagerOptions);

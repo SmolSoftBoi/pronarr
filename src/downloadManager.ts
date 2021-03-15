@@ -20,6 +20,9 @@ export interface DownloadManagerOptions {
 
     /** Custom Downloads Path? */
     customDownloadsPath?: string;
+
+    /** Debug Mode Enabled? */
+    debugModeEnabled?: boolean;
 }
 
 /** Download Manager */
@@ -40,6 +43,9 @@ export class DownloadManager {
     /** Downloads */
     private downloads: Map<string, Download> = new Map();
 
+    /** Debug Mode Enabled */
+    private debugModeEnabled = false;
+
     /**
      * @param api Pronarr API
      * @param options Download Mannager Options
@@ -50,6 +56,10 @@ export class DownloadManager {
         if (options) {
             if (options.customDownloadsPath) {
                 User.setDownloadsPath(options.customDownloadsPath);
+            }
+
+            if (options.debugModeEnabled) {
+                this.debugModeEnabled = options.debugModeEnabled;
             }
         }
 
@@ -183,7 +193,7 @@ export class DownloadManager {
             log.warn('No output.');
         }
 
-        rimraf.sync(tempFolderPath);
+        if (!this.debugModeEnabled) rimraf.sync(tempFolderPath);
 
         this.activeDownloads.delete(video.UUID);
         this.next();
@@ -287,6 +297,6 @@ export class DownloadManager {
 
     /** Handle Shutdown */
     private handleShutdown() {
-        rimraf.sync(this.tempPath);
+        if (this.debugModeEnabled) rimraf.sync(this.tempPath);
     }
 }
