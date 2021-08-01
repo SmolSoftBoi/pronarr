@@ -1,9 +1,11 @@
 
-import { createWriteStream, existsSync, mkdirSync, PathLike, unlinkSync } from 'fs';
+import { createWriteStream, existsSync, mkdirSync, PathLike, readFileSync, unlinkSync } from 'fs';
 import { get } from 'https';
 import { join } from 'path';
 
 import { Logger } from '@epickris/node-logger';
+import { Parser } from 'm3u8-parser';
+import m3u8ToMp4 from 'm3u8-to-mp4';
 import { AtomTag, Subler } from 'node-subler';
 import rimraf from 'rimraf';
 
@@ -11,6 +13,7 @@ import { InternalAPIEvent, PronarrAPI } from './api';
 import { IndexerVideo, IndexerVideoEvent } from './indexerVideo';
 import { User } from './user';
 import { Download } from './download';
+import { stat, statSync } from 'node:fs';
 
 /** Log */
 const log = Logger.internal;
@@ -115,16 +118,47 @@ export class DownloadManager {
         });
 
         /** Temp Video Path */
-        const tempVideoPath = join(tempFolderPath, `video.${download.videoExtension}`);
+        let tempVideoPath = join(tempFolderPath, `video.${download.videoExtension}`);
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
             try {
                 await this.get(download.videoUrl, tempVideoPath);
+                statSync(tempVideoPath);
                 break;
             } catch (error) {
                 log.error(error);
             }
+        }
+
+        if (download.videoExtension === 'm3u8') {
+            const parser = new Parser();
+
+            const m3u8File = readFileSync(tempVideoPath);
+
+            let m3u8Url = download.videoUrl;
+
+            parser.push(m3u8File.toString());
+            parser.end();
+
+            if (parser.manifest.playlists) {
+                const playlists = parser.manifest.playlists.sort((playlistA, playlistB) => {
+                    return playlistB.attributes['BANDWIDTH'] - playlistA.attributes['BANDWIDTH'];
+                });
+
+                if (playlists[0].uri) {
+                    m3u8Url = new URL(playlists[0].uri);
+                }
+            }
+
+            const converter = new m3u8ToMp4();
+
+            tempVideoPath = join(tempFolderPath, `video.m4v`);
+
+            await converter
+                .setInputFile(m3u8Url.href)
+                .setOutputFile(tempVideoPath.toString())
+                .start();
         }
 
         /** Promises */
@@ -155,7 +189,7 @@ export class DownloadManager {
 
         await Promise.all(promises);
 
-        /** Folder PAth */
+        /** Folder Path */
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const folderPath = join(this.path, video._associatedIndexer!);
 
@@ -188,7 +222,13 @@ export class DownloadManager {
         const tag = subler.tag();
 
         if (tag) {
-            log.debug(JSON.stringify(tag));
+            tag.output.forEach(output => {
+                if (output) log.debug(output.toString());
+            });
+
+            if (tag.error) {
+                log.error(tag.error.message);
+            }
         } else {
             log.warn('No output.');
         }
@@ -205,9 +245,9 @@ export class DownloadManager {
      * @param path Path
      * @returns Promise
      */
-    private get(url: URL, path: PathLike) {
+    private async get(url: URL, path: PathLike): Promise<void> {
         /** Promise */
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise<void>((resolve, reject) => {
             /** Write Stream */
             const writeStream = createWriteStream(path);
 
