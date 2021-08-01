@@ -13,7 +13,7 @@ import { InternalAPIEvent, PronarrAPI } from './api';
 import { IndexerVideo, IndexerVideoEvent } from './indexerVideo';
 import { User } from './user';
 import { Download } from './download';
-import { stat, statSync } from 'node:fs';
+import { statSync } from 'node:fs';
 
 /** Log */
 const log = Logger.internal;
