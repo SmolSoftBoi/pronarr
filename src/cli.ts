@@ -72,6 +72,10 @@ export = function cli(): void {
 
     if (debugModeEnabled) {
         Logger.setDebugEnabled(true);
+
+        require('longjohn');
+
+        log.debug('Debug mode enabled.');
     }
 
     /** Options */
