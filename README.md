@@ -4,6 +4,7 @@
 
 <a href="https://www.npmjs.com/package/pronarr"><img title="npm version" src="https://badgen.net/npm/v/pronarr?label=stable"></a>
 <a href="https://www.npmjs.com/package/pronarr"><img title="npm downloads" src="https://badgen.net/npm/dt/pronarr"></a>
+
 </span>
 
 **Pronarr** is a PVR for adult users. It can monitor multiple indexers for new videos of your favorite sites and will grab, sort and rename them.
