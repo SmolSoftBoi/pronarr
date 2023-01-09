@@ -1,5 +1,5 @@
 
-import { createWriteStream, existsSync, mkdirSync, PathLike, readFileSync, unlinkSync } from 'fs';
+import { createWriteStream, existsSync, mkdirSync, PathLike, readFileSync, statSync, unlinkSync } from 'fs';
 import { get } from 'https';
 import { join } from 'path';
 
@@ -13,7 +13,6 @@ import { InternalAPIEvent, PronarrAPI } from './api';
 import { IndexerVideo, IndexerVideoEvent } from './indexerVideo';
 import { User } from './user';
 import { Download } from './download';
-import { statSync } from 'node:fs';
 
 /** Log */
 const log = Logger.internal;
