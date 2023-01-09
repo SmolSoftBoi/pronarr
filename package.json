@@ -1,6 +1,6 @@
 {
   "name": "pronarr",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "lib/index.js",
   "author": "Kristian Matthews",
   "license": "MIT",
