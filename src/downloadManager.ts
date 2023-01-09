@@ -1,6 +1,7 @@
 
-import { createWriteStream, existsSync, mkdirSync, PathLike, readFileSync, statSync, unlinkSync } from 'fs';
+import { copyFileSync, createWriteStream, existsSync, mkdirSync, PathLike, readFileSync, statSync, unlinkSync } from 'fs';
 import { get } from 'https';
+import { type } from 'os';
 import { join } from 'path';
 
 import { Logger } from '@epickris/node-logger';
@@ -208,28 +209,32 @@ export class DownloadManager {
                 .add(AtomTag.studio, video._associatedIndexer);
         }
 
-        /** Subler */
-        const subler = new Subler(tempVideoPath, video.atoms)
-            .dest(videoPath);
+        if (type() === 'darwin') {
+            /** Subler */
+            const subler = new Subler(tempVideoPath, video.atoms)
+                .dest(videoPath);
 
-        /** Tag Command */
-        const tagCommand = subler.buildTagCommand();
+            /** Tag Command */
+            const tagCommand = subler.buildTagCommand();
 
-        log.debug(tagCommand.command, ...tagCommand.args);
+            log.debug(tagCommand.command, ...tagCommand.args);
 
-        /** Tag */
-        const tag = subler.tag();
+            /** Tag */
+            const tag = subler.tag();
 
-        if (tag) {
-            tag.output.forEach(output => {
-                if (output) log.debug(output.toString());
-            });
+            if (tag) {
+                tag.output.forEach(output => {
+                    if (output) log.debug(output.toString());
+                });
 
-            if (tag.error) {
-                log.error(tag.error.message);
+                if (tag.error) {
+                    log.error(tag.error.message);
+                }
+            } else {
+                log.warn('No output.');
             }
         } else {
-            log.warn('No output.');
+            copyFileSync(tempVideoPath, videoPath);
         }
 
         if (!this.debugModeEnabled) rimraf.sync(tempFolderPath);
